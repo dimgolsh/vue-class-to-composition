@@ -1,0 +1,10 @@
+{
+  "presets": [
+    ["@babel/preset-typescript", { "allowDeclareFields": true }],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "version": "legacy" }],
+    ["@babel/plugin-syntax-class-properties", { "loose": true }]
+  ]
+}

@@ -1,0 +1,35 @@
+
+html,
+body {
+    margin: 0;
+}
+nav {
+    height: 50px;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #010810;
+    color: white;
+    border-bottom: 1px solid #01050b;
+}
+nav > h1 {
+    font-size: 1.2rem;
+    line-height: 1;
+    margin: 0;
+}
+#container {
+    width: 100vw;
+    height: calc(100vh - 50px);
+    display: flex;
+}
+.editor {
+    flex: 50% 1 1;
+    height: 100%;
+    overflow: hidden;
+}
+@media screen and (max-width: 600px) {
+    #container {
+        flex-direction: column;
+    }
+}

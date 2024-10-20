@@ -1,0 +1,33 @@
+{
+  "name": "vue-class-to-composition",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.25.6",
+    "@babel/parser": "^7.25.6",
+    "@babel/plugin-proposal-decorators": "^7.25.7",
+    "@babel/plugin-syntax-class-properties": "^7.12.13",
+    "@babel/traverse": "^7.25.6",
+    "@babel/types": "^7.25.6",
+    "@vue/compiler-sfc": "^3.2.45",
+    "monaco-editor": "^0.51.0",
+    "prettier": "^3.3.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.25.6",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-typescript": "^7.24.7",
+    "@types/babel__generator": "^7.6.8",
+    "@types/babel__traverse": "^7.20.6",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.8",
+    "vite-plugin-node-polyfills": "^0.22.0"
+  }
+}

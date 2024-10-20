@@ -1,0 +1,61 @@
+<template>
+	<VSelect :value="languageId" :label="label" :items="languages" @input="$emit('input', $event)" />
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'common/vue';
+import { inject } from 'common/di';
+import { LanguagesClient } from 'api/admin/languages';
+
+@Component
+export default class LanguageSelector extends Vue {
+	private readonly languagesApi = inject(LanguagesClient);
+
+	@Prop({ type: Object, required: true })
+    public value: INotificationModel;
+
+    @Prop(Array)
+    errors: IQAErrorModel[];
+
+    @Prop
+    simple: string;
+
+    @Prop({ type: Array, required: true })
+    tqs: IQAErrorModel[];
+
+    @Prop({ type: Boolean, required: true })
+    public valueB: boolean;
+
+	@Prop({ type: Number })
+	public readonly languageId: number;
+
+	@Prop({ type: String })
+	public readonly label: string;
+
+	public languages: any[] = [];
+
+	@Validate({ required: true })
+    get selectedLanguageFrom() {
+    		return this.languagesStore.isTargetLanguageRTL;
+   }
+
+   set selectedLanguageFrom() {
+    		this.$v.selectedLanguageFrom.$touch();
+    		this.$emit('on-data-change');
+   }
+
+	public async created() {
+		const languages = await this.languagesApi.getAvailableLanguages();
+		this.languages = languages.map((l) => {
+			return { value: l.id, text: l.name };
+		});
+	}
+
+	mounted() {
+    		this.$nextTick();
+    		(this.$refs.inputLabel as HTMLElement).focus();
+    		const { y, height } = (this.$refs.labelbutton as HTMLElement).getBoundingClientRect();
+    		const layout = document.getElementById('layout-top-left-container').clientHeight;
+    }
+}
+</script>
