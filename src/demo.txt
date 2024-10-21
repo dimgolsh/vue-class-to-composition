@@ -6,6 +6,7 @@
 import { Component, Prop, Vue } from 'common/vue';
 import { inject } from 'common/di';
 import { LanguagesClient } from 'api/admin/languages';
+import { INotificationModel } from 'api/admin/notifications';
 
 @Component
 export default class LanguageSelector extends Vue {
@@ -19,6 +20,9 @@ export default class LanguageSelector extends Vue {
 
     @Prop
     simple: string;
+
+    @Prop
+    isShown: boolean;
 
     @Prop({ type: Array, required: true })
     tqs: IQAErrorModel[];

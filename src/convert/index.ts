@@ -13,7 +13,6 @@ interface ConvertResult {
 	errors: string[];
 }
 
-
 export const convert = async (content: string): Promise<ConvertResult> => {
 	const desc = parseVueFromContent(content);
 
@@ -23,25 +22,21 @@ export const convert = async (content: string): Promise<ConvertResult> => {
 		errorRecovery: true,
 	});
 
-	console.log(ast);
-
 	let defaultNode: NodePath<t.ExportDefaultDeclaration> = null;
 
 	traverse(ast, {
-		Decorator(path) {
-			console.log(path);
-		},
 		ExportDefaultDeclaration(path) {
 			defaultNode = path;
 		},
+		MemberExpression(path) {
+			console.log(path)
+		}
 	});
 
-
-	console.log(defaultNode);
 	const defineComponent = getDefineComponent(defaultNode);
+	console.log(defaultNode)
 
-
-	const newAst = t.program([...ast.program.body, defineComponent]);
+	const newAst = t.program([defineComponent, ...ast.program.body]);
 
 	const code = generate(newAst, { jsescOption: { quotes: 'single' } }).code;
 
