@@ -1,7 +1,6 @@
 import { parse as parseVue } from '@vue/compiler-sfc';
-import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
-import { getBodyClass } from './helpers';
+
 
 export const newLine = 'REPLACE_FOR_NEW_LINE';
 
@@ -13,35 +12,12 @@ export const parseVueFromContent = (content: string) => {
 	return descriptor;
 };
 
-export const getClassPropertiesByDecoratorName = (
-	node: NodePath<t.ExportDefaultDeclaration>,
-	decoratorName: string,
+export const wrapNewLineComment = (
+	node: t.VariableDeclaration | t.ExpressionStatement | t.Statement | t.BlockStatement,
 ) => {
-	const body = getBodyClass(node);
-	if (!body) {
-		return [];
+	if (!node) {
+		return null;
 	}
-	const properties = body.body.filter((n) => t.isClassProperty(n));
-
-	if (!properties.length) {
-		return [];
-	}
-
-	return properties
-		.filter((n) => n.decorators?.length)
-		.filter((n) => {
-			const [decorator] = n.decorators;
-			// @Prop
-			if (t.isIdentifier(decorator.expression)) {
-				return decorator.expression.name === decoratorName;
-			}
-			if (!t.isCallExpression(decorator.expression)) {
-				return false;
-			}
-			if (!t.isIdentifier(decorator.expression.callee)) {
-				return false;
-			}
-			// @Prop({ type: Object, required: true })
-			return decorator.expression.callee.name === decoratorName;
-		});
+	node.leadingComments = [{ type: 'CommentLine', value: newLine }];
+	return node;
 };

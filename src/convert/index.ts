@@ -1,11 +1,9 @@
 import { parseVueFromContent } from './utils';
 import { parse } from '@babel/parser';
-import traverse, { NodePath } from '@babel/traverse';
-import * as t from '@babel/types';
 import generate from '@babel/generator';
 import { generateVue } from './generateVue';
 import { formatCode } from './formatCode';
-import { getDefineComponent } from './defineComponent';
+import { transform } from './transform';
 
 interface ConvertResult {
 	isOk: boolean;
@@ -14,34 +12,26 @@ interface ConvertResult {
 }
 
 export const convert = async (content: string): Promise<ConvertResult> => {
+	// Parse
 	const desc = parseVueFromContent(content);
 
+	// AST
 	const ast = parse(desc.script.content, {
 		sourceType: 'module',
 		plugins: ['typescript', 'decorators'],
 		errorRecovery: true,
 	});
 
-	let defaultNode: NodePath<t.ExportDefaultDeclaration> = null;
+	// Transform
+	const newAst = transform(ast);
 
-	traverse(ast, {
-		ExportDefaultDeclaration(path) {
-			defaultNode = path;
-		},
-		MemberExpression(path) {
-			console.log(path)
-		}
-	});
-
-	const defineComponent = getDefineComponent(defaultNode);
-	console.log(defaultNode)
-
-	const newAst = t.program([defineComponent, ...ast.program.body]);
-
+	// Generate
 	const code = generate(newAst, { jsescOption: { quotes: 'single' } }).code;
 
+	// Vue compile
 	const rawVue = generateVue(desc, code);
 
+	// Format
 	const format = await formatCode(rawVue);
 
 	return {

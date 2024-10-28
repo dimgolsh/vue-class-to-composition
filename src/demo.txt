@@ -8,9 +8,14 @@ import { inject } from 'common/di';
 import { LanguagesClient } from 'api/admin/languages';
 import { INotificationModel } from 'api/admin/notifications';
 
-@Component
+interface IModel {
+    value: string;
+}
+
+@Component({ i18n, components: { NotificationTemplate, MdButton } })
 export default class LanguageSelector extends Vue {
 	private readonly languagesApi = inject(LanguagesClient);
+	private readonly languagesStore = inject(LanguagesStore);
 
 	@Prop({ type: Object, required: true })
     public value: INotificationModel;
@@ -37,6 +42,21 @@ export default class LanguageSelector extends Vue {
 	public readonly label: string;
 
 	public languages: any[] = [];
+	public currency = Currency;
+    public files: IFileModel[] = null;
+    public file: IFileModel = null;
+    isShownResults = true
+    ids: string[] = null
+
+    @Validate({
+    		required: 'trim',
+    })
+    public legalName: string = null;
+
+    @Validate({ required: true })
+    get selectedLanguagesTo() {
+    	return this.languagesStore.isTargetLanguageRTL;
+    }
 
 	@Validate({ required: true })
     get selectedLanguageFrom() {
@@ -48,11 +68,34 @@ export default class LanguageSelector extends Vue {
     		this.$emit('on-data-change');
    }
 
+   get cancelButtonText() {
+   		return this.value ? this.value : (this.$t('Cancel') as string);
+   	}
+
+   get modelValue() {
+        return this.value
+   }
+
+   	get isEditTeamPage() {
+   		return this.$route.name === 'TeamManagement';
+   	}
+
+   set modelValue(str: string) {
+        this.$emit('update', str);
+   }
+
 	public async created() {
 		const languages = await this.languagesApi.getAvailableLanguages();
+		if (this.$slots.activator) {
+		    console.log('activator');
+		}
 		this.languages = languages.map((l) => {
 			return { value: l.id, text: l.name };
 		});
+	}
+
+	public async calc(a: number, b: number) {
+    	return a + b;
 	}
 
 	mounted() {

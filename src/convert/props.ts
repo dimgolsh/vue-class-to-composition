@@ -1,10 +1,9 @@
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
-import { getClassPropertiesByDecoratorName } from './utils';
-import { getDecoratorArguments } from './helpers';
+import { getClassPropertiesByDecoratorName, getDecoratorArguments } from './helpers';
 import ConversionStore from './store';
 
-const store = ConversionStore.getInstance();
+const store = ConversionStore
 
 const createProp = (name: string, properties: t.ObjectProperty[]) => {
 	return t.objectProperty(t.identifier(name), t.objectExpression(properties.filter((n) => !!n)));
@@ -16,10 +15,11 @@ const createPropType = (typeName: string, isArray: boolean) => {
 	// type: Object as PropType<INotificationModel>
 	// type: Array as PropType<INotificationModel[]>
 	const reference = t.tSTypeReference(t.identifier(typeName));
+	const identifier = t.identifier(isArray ? 'Array' : 'Object');
 	return t.objectProperty(
 		t.identifier('type'),
 		t.tsAsExpression(
-			t.identifier(isArray ? 'Array' : 'Object'),
+			identifier,
 			t.tsTypeReference(
 				t.identifier('PropType'),
 				t.tsTypeParameterInstantiation([isArray ? t.tsArrayType(reference) : reference]),
@@ -70,6 +70,12 @@ const transformProp = (property: t.ClassProperty) => {
 	if (t.isTSBooleanKeyword(type)) {
 		// type: Boolean
 		const prop = t.objectProperty(t.identifier('type'), t.identifier('Boolean'));
+		results.set('type', prop);
+	}
+
+	if (t.isTSNumberKeyword(type)) {
+		// type: Number
+		const prop = t.objectProperty(t.identifier('type'), t.identifier('Number'));
 		results.set('type', prop);
 	}
 
