@@ -1,7 +1,7 @@
 import { ParseResult } from '@babel/parser';
 import * as t from '@babel/types';
-import traverse, { NodePath } from '@babel/traverse';
-import { thisTransform } from './this-transform';
+import { NodePath } from '@babel/traverse';
+import { replaceThis } from './this-transform';
 import { getComponentName, getDefaultNode } from './helpers';
 import { getComponentOptions } from './component';
 import { getProps } from './props';
@@ -11,22 +11,41 @@ import { getImportsNodes } from './imports';
 import { wrapNewLineComment } from './utils';
 import { i18nPlugin } from './plugins/i18n';
 import { useRouterPlugin } from './plugins/useRouter';
+import { replaceContext } from './setup/context';
+import { replaceRefsToRef } from './setup/refs';
+import { replaceVueHooks } from './setup/vue';
+import { getRefs } from './setup/ref';
+import { getComputeds } from './setup/computed';
+import { getMethods } from './setup/methods';
+import ConversionStore from './store';
 
 export const transform = (ast: ParseResult<t.File>) => {
+	// Before clear store
+	ConversionStore.clear();
+
 	const node: NodePath<t.ExportDefaultDeclaration> = getDefaultNode(ast);
+
+	// Plugins
+	i18nPlugin(ast);
+	useRouterPlugin(ast);
+
 	const otherNodes = getOtherNodes(ast);
 	const componentName = getComponentName(node);
 	const options = getComponentOptions(node);
 	const props = getProps(node);
 
-	i18nPlugin(ast);
-	useRouterPlugin(ast);
+	const refs = getRefs(node);
+	const computeds = getComputeds(node);
+	const methods = getMethods(node);
 
-	traverse(ast, {
-		MemberExpression: thisTransform,
-	});
+	replaceContext(ast);
+	replaceRefsToRef(ast);
+	replaceVueHooks(ast);
 
-	const setup = createSetup(node);
+	// Replace this.
+	replaceThis(ast);
+
+	const setup = createSetup([...refs, ...computeds, ...methods]);
 
 	const properties: Array<t.ObjectMethod | t.ObjectProperty | t.SpreadElement> = [
 		componentName,
@@ -41,11 +60,7 @@ export const transform = (ast: ParseResult<t.File>) => {
 
 	const imports = getImportsNodes(ast);
 
-	const newAst = t.program([
-		...imports,
-		...otherNodes.map(wrapNewLineComment),
-		wrapNewLineComment(defineComponent),
-	]);
+	const newAst = t.program([...imports, ...otherNodes.map(wrapNewLineComment), wrapNewLineComment(defineComponent)]);
 
 	return newAst;
 };

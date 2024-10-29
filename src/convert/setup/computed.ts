@@ -1,7 +1,14 @@
 import * as t from '@babel/types';
 import ConversionStore from '../store';
+import { getBodyClass } from '../helpers';
+import { NodePath } from '@babel/traverse';
 
-export const getComputeds = (body: t.ClassBody) => {
+export const getComputeds = (node: NodePath<t.ExportDefaultDeclaration>) => {
+	const body = getBodyClass(node);
+	if (!body) {
+		return [];
+	}
+
 	const getters = body.body.filter((n) => t.isClassMethod(n, { kind: 'get' }));
 	const setters = body.body.filter((n) => t.isClassMethod(n, { kind: 'set' }));
 	const declarations: t.VariableDeclaration[] = [];
@@ -36,7 +43,8 @@ export const getComputeds = (body: t.ClassBody) => {
 			declarations.push(declaration);
 		}
 
-		ConversionStore.addReturnStatement(key, t.objectProperty(t.identifier(key), t.identifier(key), false, true));
+		ConversionStore.addShortReturnStatementByName(key);
+		ConversionStore.addRef(key);
 	}
 
 	return declarations;

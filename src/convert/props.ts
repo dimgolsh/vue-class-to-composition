@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import { getClassPropertiesByDecoratorName, getDecoratorArguments } from './helpers';
 import ConversionStore from './store';
 
-const store = ConversionStore
+const store = ConversionStore;
 
 const createProp = (name: string, properties: t.ObjectProperty[]) => {
 	return t.objectProperty(t.identifier(name), t.objectExpression(properties.filter((n) => !!n)));
@@ -112,6 +112,10 @@ export const getProps = (node: NodePath<t.ExportDefaultDeclaration>) => {
 		if (res) {
 			properties.push(res);
 		}
+	}
+
+	if (properties.length === 0) {
+		return null
 	}
 
 	return t.objectProperty(t.identifier('props'), t.objectExpression(properties));

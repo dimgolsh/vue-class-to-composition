@@ -75,3 +75,7 @@ export const getClassPropertiesByDecoratorName = (
 
 	return properties.filter((n) => n.decorators?.length).filter((n) => isHasDecorator(n, decoratorName));
 };
+
+export const createShortHandProperty = (name: string) => {
+	return t.objectProperty(t.identifier(name), t.identifier(name), false, true);
+};

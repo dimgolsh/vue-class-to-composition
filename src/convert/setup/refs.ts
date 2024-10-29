@@ -1,43 +1,30 @@
+import { ParseResult } from '@babel/parser';
 import * as t from '@babel/types';
-import { isHasDecorator } from '../helpers';
+import traverse from '@babel/traverse';
 import ConversionStore from '../store';
 
-export const transformToRef = (prop: t.ClassProperty) => {
-	if (isHasDecorator(prop, 'Prop')) {
-		return null;
-	}
-	if (!t.isIdentifier(prop.key)) {
-		return null;
-	}
+// replace this.$refs to ref
+export const replaceRefsToRef = (ast: ParseResult<t.File>) => {
+	traverse(ast, {
+		MemberExpression: (path) => {
+			if (
+				t.isMemberExpression(path.node.object) &&
+				t.isIdentifier(path.node.object.property, { name: '$refs' }) &&
+				t.isIdentifier(path.node.property)
+			) {
+				// replace this.$refs to ref
+				const name = path.node.property.name;
+				const ref = t.variableDeclaration('const', [
+					t.variableDeclarator(t.identifier(name), t.callExpression(t.identifier('ref'), [t.nullLiteral()])),
+				]);
 
-	const value = prop.value ? prop.value : t.nullLiteral();
-	const getRef = () => {
-		if (prop.typeAnnotation && t.isTSTypeAnnotation(prop.typeAnnotation)) {
-			const withType = t.tsInstantiationExpression(
-				t.identifier('ref'),
-				t.tsTypeParameterInstantiation([prop.typeAnnotation.typeAnnotation]),
-			);
-			return t.callExpression(withType, [value]);
-		}
-		return t.callExpression(t.identifier('ref'), [value]);
-	};
-	const ref = getRef();
-	const res = t.variableDeclaration('const', [t.variableDeclarator(prop.key, ref)]);
-	ConversionStore.addReturnStatement(
-		prop.key.name,
-		t.objectProperty(t.identifier(prop.key.name), t.identifier(prop.key.name), false, true),
-	);
-	return res;
-};
-
-export const getRefs = (properties: t.ClassProperty[]) => {
-	const declarations: t.VariableDeclaration[] = [];
-	for (const prop of properties) {
-		const res = transformToRef(prop);
-		if (res) {
-			declarations.push(res);
-		}
-	}
-
-	return declarations;
+				ConversionStore.addBeforeSetupStatement(name, ref);
+				ConversionStore.addShortReturnStatementByName(name);
+				ConversionStore.addRef(name);
+				const newExpression = t.memberExpression(t.identifier(name), t.identifier('value'));
+				path.replaceWith(newExpression);
+				return;
+			}
+		},
+	});
 };

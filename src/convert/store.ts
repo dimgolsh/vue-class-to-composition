@@ -1,49 +1,60 @@
 import * as t from '@babel/types';
+import { createShortHandProperty } from './helpers';
 
 const props = new Set<string>();
 const flags = new Map<string, boolean>();
 const imports = new Map<string, Map<string, string>>();
 
-
 const beforeSetupStatement = new Map<string, t.Statement>(null);
 const afterSetupStatement = new Map<string, t.Statement>(null);
 const setupContextKeys = new Set<string>();
+const refsName = new Set<string>();
 const returnStatement = new Map<string, t.ObjectMethod | t.ObjectProperty | t.SpreadElement>(null);
 
 const ConversionStore = (() => {
+	const addRef = (name: string) => {
+		refsName.add(name);
+	};
+
+	const hasRefName = (name: string) => {
+		return refsName.has(name);
+	};
 
 	const addReturnStatement = (name: string, node: t.ObjectMethod | t.ObjectProperty | t.SpreadElement) => {
 		returnStatement.set(name, node);
-	}
+	};
+
+	const addShortReturnStatementByName = (name: string) => {
+		returnStatement.set(name, createShortHandProperty(name));
+	};
 
 	const getReturnStatement = () => {
 		return returnStatement;
-	}
+	};
 
 	const addSetupContextKey = (name: string) => {
 		setupContextKeys.add(name);
-	}
+	};
 
 	const getSetupContextKeys = () => {
 		return setupContextKeys;
-	}
-
+	};
 
 	const addBeforeSetupStatement = (name: string, node: t.Statement) => {
 		beforeSetupStatement.set(name, node);
-	}
+	};
 
 	const getBeforeSetupStatements = () => {
 		return beforeSetupStatement;
-	}
+	};
 
 	const addAfterSetupStatement = (name: string, node: t.Statement) => {
 		afterSetupStatement.set(name, node);
-	}
+	};
 
 	const getAfterSetupStatements = () => {
 		return afterSetupStatement;
-	}
+	};
 
 	const addImport = (source: string, key: string) => {
 		if (imports.has(source)) {
@@ -80,8 +91,14 @@ const ConversionStore = (() => {
 
 	// Метод для очистки хранилища
 	const clear = () => {
+		imports.clear();
 		props.clear();
 		flags.clear();
+		beforeSetupStatement.clear();
+		afterSetupStatement.clear();
+		setupContextKeys.clear();
+		refsName.clear();
+		returnStatement.clear();
 	};
 
 	// Метод для вывода содержимого хранилища
@@ -108,7 +125,10 @@ const ConversionStore = (() => {
 		addAfterSetupStatement,
 		getAfterSetupStatements,
 		addReturnStatement,
-		getReturnStatement
+		getReturnStatement,
+		addRef,
+		hasRefName,
+		addShortReturnStatementByName,
 	};
 })();
 
