@@ -33,11 +33,9 @@ export const serverClientPlugin = (ast: ParseResult<t.File>) => {
 			path.skip();
 			if (!Array.isArray(path.container) && t.isClassProperty(path.container)) {
 				if (t.isIdentifier(path.container.key)) {
-					console.log(path.container.key.name);
 					ConversionStore.addExcludeRef(path.container.key.name);
 				}
 			}
-			// path.replaceInline(newExpression);
 		},
 	});
 };

@@ -1,13 +1,29 @@
 {
   "name": "vue-class-to-composition",
+  "description": "Convert Vue files written using the old syntax Vue Class Components into Vue composition API syntax",
+  "author": "Dmitriy (https://github.com/dimgolsh)",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "build:cli": "babel src --out-dir dist --extensions \".ts\" && tsc --emitDeclarationOnly -p tsconfig.compile.json",
+    "preview": "vite preview",
+    "deploy": "gh-pages -d demo-dist",
+    "publish": "npm run build:cli && npm publish"
   },
+  "bin": {
+    "vue-class-to-composition": "bin/cli"
+  },
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "license": "MIT",
+  "files": [
+    "bin",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "@babel/generator": "^7.25.6",
     "@babel/parser": "^7.25.6",
@@ -17,6 +33,9 @@
     "@babel/types": "^7.25.6",
     "@vue/compiler-sfc": "^3.2.45",
     "monaco-editor": "^0.51.0",
+    "chalk": "^4.1.2",
+    "cli-progress": "^3.12.0",
+    "commander": "^12.1.0",
     "prettier": "^3.3.3"
   },
   "devDependencies": {
@@ -26,6 +45,14 @@
     "@babel/preset-typescript": "^7.24.7",
     "@types/babel__generator": "^7.6.8",
     "@types/babel__traverse": "^7.20.6",
+    "@types/chalk": "^2.2.0",
+    "@types/cli-progress": "^3.11.6",
+    "@types/commander": "^2.12.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.5.5",
+    "execa": "^9.4.0",
+    "fs-extra": "^11.2.0",
+    "gh-pages": "^6.1.1",
     "typescript": "^5.5.4",
     "vite": "^5.4.8",
     "vite-plugin-node-polyfills": "^0.22.0"
