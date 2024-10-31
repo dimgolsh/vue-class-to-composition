@@ -18,6 +18,7 @@ import { getRefs } from './setup/ref';
 import { getComputeds } from './setup/computed';
 import { getMethods } from './setup/methods';
 import ConversionStore from './store';
+import { serverClientPlugin } from './plugins/serverClientPlugin';
 
 export const transform = (ast: ParseResult<t.File>) => {
 	// Before clear store
@@ -27,6 +28,7 @@ export const transform = (ast: ParseResult<t.File>) => {
 
 	// Plugins
 	i18nPlugin(ast);
+	serverClientPlugin(ast);
 	useRouterPlugin(ast);
 
 	const otherNodes = getOtherNodes(ast);

@@ -17,15 +17,15 @@ export const thisTransform = (path: NodePath<t.MemberExpression>) => {
 			return;
 		}
 
-		// Проверяем, что это не метод, а именно свойство (или реактивная переменная)
 		if (propertyName) {
-			// Заменяем this.someProp на просто someProp
-			const newExpression = t.memberExpression(t.identifier(propertyName), t.identifier('value'));
-
+			// Replace this.someValue на someValue.value
 			if (ConversionStore.hasRefName(propertyName)) {
+				const newExpression = t.memberExpression(t.identifier(propertyName), t.identifier('value'));
+				path.replaceWith(newExpression);
+			} else {
+				const newExpression = t.identifier(propertyName);
 				path.replaceWith(newExpression);
 			}
-			// path.replaceWith(newExpression);
 		}
 	}
 };

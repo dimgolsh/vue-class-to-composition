@@ -22,21 +22,30 @@ export const convert = async (content: string): Promise<ConvertResult> => {
 		errorRecovery: true,
 	});
 
-	// Transform
-	const newAst = transform(ast);
+	try {
+		// Transform
+		const newAst = transform(ast);
 
-	// Generate
-	const code = generate(newAst, { jsescOption: { quotes: 'single' } }).code;
+		// Generate
+		const code = generate(newAst, { jsescOption: { quotes: 'single' } }).code;
 
-	// Vue compile
-	const rawVue = generateVue(desc, code);
+		// Vue compile
+		const rawVue = generateVue(desc, code);
 
-	// Format
-	const format = await formatCode(rawVue);
+		// Format
+		const format = await formatCode(rawVue);
 
-	return {
-		isOk: true,
-		content: format,
-		errors: [],
-	};
+		return {
+			isOk: true,
+			content: format,
+			errors: [],
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			isOk: false,
+			content: `Error while converting. \n\n Please send this message to the author: \n\n ${error} \n\n\n ${desc.script.content}`,
+			errors: [],
+		};
+	}
 };

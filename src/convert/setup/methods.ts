@@ -24,7 +24,6 @@ const internalHooks = new Map([
 
 const transformMethod = (node: t.ClassMethod) => {
 	if (t.isIdentifier(node.key)) {
-		console.log(node);
 		const name = node.key.name;
 		const body = node.body;
 		const params = node.params.filter((n) => t.isIdentifier(n) || t.isPattern(n) || t.isRestElement(n));
@@ -37,7 +36,7 @@ const transformMethod = (node: t.ClassMethod) => {
 				t.variableDeclarator(t.identifier(legacyHooks.get(name)), expression),
 			]);
 			ConversionStore.addAfterSetupStatement(
-				'created',
+				legacyName,
 				t.expressionStatement(t.callExpression(t.identifier(legacyName), [])),
 			);
 			return result;

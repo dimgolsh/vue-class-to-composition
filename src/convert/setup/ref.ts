@@ -1,7 +1,27 @@
 import * as t from '@babel/types';
-import {getBodyClass, isHasDecorator} from '../helpers';
+import { getBodyClass, isHasDecorator } from '../helpers';
 import ConversionStore from '../store';
-import {NodePath} from "@babel/traverse";
+import traverse, { NodePath } from '@babel/traverse';
+import { ParseResult } from '@babel/parser';
+
+export const saveRefName = (prop: t.ClassProperty) => {
+	if (isHasDecorator(prop, 'Prop')) {
+		return;
+	}
+	if (!t.isIdentifier(prop.key)) {
+		return;
+	}
+	const name = prop.key.name;
+	ConversionStore.addRef(name);
+};
+
+export const savesRefNames = (ast: ParseResult<t.File>) => {
+	traverse(ast, {
+		ClassProperty: (path) => {
+			saveRefName(path.node);
+		},
+	});
+};
 
 export const transformToRef = (prop: t.ClassProperty) => {
 	if (isHasDecorator(prop, 'Prop')) {
@@ -23,10 +43,15 @@ export const transformToRef = (prop: t.ClassProperty) => {
 		return t.callExpression(t.identifier('ref'), [value]);
 	};
 	const ref = getRef();
-	const res = t.variableDeclaration('const', [t.variableDeclarator(prop.key, ref)]);
 	const name = prop.key.name;
-	ConversionStore.addRef(name);
 	ConversionStore.addShortReturnStatementByName(name);
+
+	if (ConversionStore.hasExcludeRefsName(name)) {
+		return t.variableDeclaration('const', [t.variableDeclarator(prop.key, value)]);
+	}
+
+	const res = t.variableDeclaration('const', [t.variableDeclarator(prop.key, ref)]);
+	ConversionStore.addRef(name);
 	return res;
 };
 

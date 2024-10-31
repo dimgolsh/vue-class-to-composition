@@ -3,17 +3,26 @@ import { createShortHandProperty } from './helpers';
 
 const props = new Set<string>();
 const flags = new Map<string, boolean>();
-const imports = new Map<string, Map<string, string>>();
+const imports = new Map<string, Map<string, { value: string; isDefault: boolean }>>();
 
 const beforeSetupStatement = new Map<string, t.Statement>(null);
 const afterSetupStatement = new Map<string, t.Statement>(null);
 const setupContextKeys = new Set<string>();
 const refsName = new Set<string>();
+const excludeRefsName = new Set<string>();
 const returnStatement = new Map<string, t.ObjectMethod | t.ObjectProperty | t.SpreadElement>(null);
 
 const ConversionStore = (() => {
 	const addRef = (name: string) => {
 		refsName.add(name);
+	};
+
+	const addExcludeRef = (name: string) => {
+		excludeRefsName.add(name);
+	};
+
+	const hasExcludeRefsName = (name: string) => {
+		return excludeRefsName.has(name);
 	};
 
 	const hasRefName = (name: string) => {
@@ -56,12 +65,12 @@ const ConversionStore = (() => {
 		return afterSetupStatement;
 	};
 
-	const addImport = (source: string, key: string) => {
+	const addImport = (source: string, key: string, isDefault = false) => {
 		if (imports.has(source)) {
 			const current = imports.get(source);
-			current.set(key, key);
+			current.set(key, { value: key, isDefault });
 		} else {
-			imports.set(source, new Map([[key, key]]));
+			imports.set(source, new Map([[key, { value: key, isDefault }]]));
 		}
 	};
 
@@ -98,6 +107,7 @@ const ConversionStore = (() => {
 		afterSetupStatement.clear();
 		setupContextKeys.clear();
 		refsName.clear();
+		excludeRefsName.clear();
 		returnStatement.clear();
 	};
 
@@ -129,6 +139,8 @@ const ConversionStore = (() => {
 		addRef,
 		hasRefName,
 		addShortReturnStatementByName,
+		addExcludeRef,
+		hasExcludeRefsName,
 	};
 })();
 

@@ -5,20 +5,27 @@ import traverse from '@babel/traverse';
 
 const excludesNamesImportSpecifier = ['Component', 'Prop', 'Vue'];
 
-export const addImport = (imports: t.ImportDeclaration[], value: { source: string; specifier: string }) => {
+export const addImport = (
+	imports: t.ImportDeclaration[],
+	value: {
+		source: string;
+		specifier: string;
+		isDefault: boolean;
+	},
+) => {
+	const { source, specifier, isDefault } = value;
 	const findImport = imports.findIndex((importDeclaration) => {
-		return importDeclaration.source.value === value.source;
+		return importDeclaration.source.value === source;
 	});
 
+	const res = isDefault
+		? t.importDefaultSpecifier(t.identifier(specifier))
+		: t.importSpecifier(t.identifier(specifier), t.identifier(specifier));
+
 	if (findImport === -1) {
-		imports.push(
-			t.importDeclaration(
-				[t.importSpecifier(t.identifier(value.specifier), t.identifier(value.specifier))],
-				t.stringLiteral(value.source),
-			),
-		);
+		imports.push(t.importDeclaration([res], t.stringLiteral(value.source)));
 	} else {
-		imports[findImport].specifiers.push(t.importDefaultSpecifier(t.identifier(value.specifier)));
+		imports[findImport].specifiers.push(t.importDefaultSpecifier(t.identifier(specifier)));
 	}
 
 	return imports;
@@ -48,8 +55,8 @@ export const getImportsNodes = (ast: ParseResult<t.File>) => {
 	const storeImports = ConversionStore.getImports();
 
 	for (const [key, values] of storeImports) {
-		for (const [specifier] of values) {
-			addImport(imports, { source: key, specifier });
+		for (const [_, { value, isDefault }] of values) {
+			addImport(imports, { source: key, specifier: value, isDefault });
 		}
 	}
 
