@@ -18,8 +18,9 @@ import { getRefs } from './setup/ref';
 import { getComputeds } from './setup/computed';
 import { getMethods } from './setup/methods';
 import ConversionStore from './store';
-import { serverClientPlugin } from './plugins/serverClientPlugin';
 import { useValidatePlugin } from './plugins/validate';
+import { usePlugins } from './plugins';
+import { serverClientPlugin } from './plugins/serverClientPlugin';
 
 export const transform = (ast: ParseResult<t.File>) => {
 	// Before clear store
@@ -27,13 +28,8 @@ export const transform = (ast: ParseResult<t.File>) => {
 
 	const node: NodePath<t.ExportDefaultDeclaration> = getDefaultNode(ast);
 
-	console.log(node);
-
 	// Plugins
-	i18nPlugin(ast);
-	serverClientPlugin(ast);
-	useRouterPlugin(ast);
-	useValidatePlugin(ast);
+	usePlugins(ast, [serverClientPlugin, i18nPlugin, useRouterPlugin, useValidatePlugin]);
 
 	const otherNodes = getOtherNodes(ast);
 	const componentName = getComponentName(node);

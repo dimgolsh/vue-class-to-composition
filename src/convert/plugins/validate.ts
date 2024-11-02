@@ -1,10 +1,8 @@
-import { ParseResult } from '@babel/parser';
 import * as t from '@babel/types';
-import traverse from '@babel/traverse';
-import ConversionStore from '../store';
 import { createShortHandProperty } from '../helpers';
+import { TransformPlugin } from '../types';
 
-export const useValidatePlugin = (ast: ParseResult<t.File>) => {
+export const useValidatePlugin: TransformPlugin = ({ ast, t, traverse, store }) => {
 	const names: t.ObjectProperty[] = [];
 	const rules: t.ObjectProperty[] = [];
 
@@ -13,7 +11,6 @@ export const useValidatePlugin = (ast: ParseResult<t.File>) => {
 			if (t.isCallExpression(path.node.expression) && t.isIdentifier(path.node.expression.callee)) {
 				const name = path.node.expression.callee.name;
 				if (name === 'Validate') {
-					console.log(path);
 					if (t.isClassMethod(path.parent) || t.isClassProperty(path.parent)) {
 						const nameProperty = (path.parent.key as t.Identifier).name;
 						const arg = path.node.expression.arguments[0];
@@ -42,7 +39,7 @@ export const useValidatePlugin = (ast: ParseResult<t.File>) => {
 		t.callExpression(t.identifier('provide'), [t.stringLiteral('$v'), t.identifier('$v')]),
 	);
 
-	ConversionStore.addAfterSetupStatement('useVuelidate', $v);
-	ConversionStore.addAfterSetupStatement('provide$v', statement);
-	ConversionStore.addRef('$v')
+	store.addAfterSetupStatement('useVuelidate', $v);
+	store.addAfterSetupStatement('provide$v', statement);
+	store.addRef('$v');
 };

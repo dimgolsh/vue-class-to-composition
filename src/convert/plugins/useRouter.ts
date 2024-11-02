@@ -1,9 +1,6 @@
-import { ParseResult } from '@babel/parser';
-import * as t from '@babel/types';
-import traverse from '@babel/traverse';
-import ConversionStore from '../store';
+import { TransformPlugin } from '../types';
 
-export const useRouterPlugin = (ast: ParseResult<t.File>) => {
+export const useRouterPlugin: TransformPlugin = ({ ast, t, traverse, store }) => {
 	const keys = new Map([
 		['$route', { key: 'route', import: { source: 'vue-router/composables', path: 'useRoute' } }],
 		['$router', { key: 'router', import: { source: 'vue-router/composables', path: 'useRouter' } }],
@@ -21,13 +18,13 @@ export const useRouterPlugin = (ast: ParseResult<t.File>) => {
 					path.replaceWith(t.identifier(result.key));
 
 					// 2. Add Import { useRoute } from 'vue-router/composables';
-					ConversionStore.addImport(result.import.source, result.import.path);
+					store.addImport(result.import.source, result.import.path);
 
 					// 3. Add const router = useRouter()
 					const declaration = t.variableDeclaration('const', [
 						t.variableDeclarator(t.identifier(result.key), t.callExpression(t.identifier(result.import.path), [])),
 					]);
-					ConversionStore.addBeforeSetupStatement(result.import.path, declaration);
+					store.addBeforeSetupStatement(result.import.path, declaration);
 				}
 			}
 		},

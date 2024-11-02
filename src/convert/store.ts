@@ -1,5 +1,6 @@
 import * as t from '@babel/types';
 import { createShortHandProperty } from './helpers';
+import { TransformPlugin } from './types';
 
 const props = new Set<string>();
 const flags = new Map<string, boolean>();
@@ -11,6 +12,7 @@ const setupContextKeys = new Set<string>();
 const refsName = new Set<string>();
 const excludeRefsName = new Set<string>();
 const returnStatement = new Map<string, t.ObjectMethod | t.ObjectProperty | t.SpreadElement>(null);
+const plugins = new Map<string, TransformPlugin>();
 
 const ConversionStore = (() => {
 	const addRef = (name: string) => {
@@ -98,7 +100,16 @@ const ConversionStore = (() => {
 		return flags.get(flagName);
 	};
 
-	// Метод для очистки хранилища
+	// Методы для управления плагинами
+	const registerPlugin = (name: string, plugin: TransformPlugin) => {
+		plugins.set(name, plugin);
+	};
+
+	const getPlugins = () => {
+		return Array.from(plugins.values());
+	};
+
+
 	const clear = () => {
 		imports.clear();
 		props.clear();
@@ -111,7 +122,7 @@ const ConversionStore = (() => {
 		returnStatement.clear();
 	};
 
-	// Метод для вывода содержимого хранилища
+
 	const printStore = () => {
 		console.log('Props:', Array.from(props));
 		console.log('Flags:', Array.from(flags.entries()));
@@ -141,6 +152,8 @@ const ConversionStore = (() => {
 		addShortReturnStatementByName,
 		addExcludeRef,
 		hasExcludeRefsName,
+		registerPlugin,
+		getPlugins
 	};
 })();
 

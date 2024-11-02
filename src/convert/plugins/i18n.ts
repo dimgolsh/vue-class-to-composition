@@ -1,10 +1,7 @@
-import { ParseResult } from '@babel/parser';
-import * as t from '@babel/types';
-import traverse from '@babel/traverse';
-import ConversionStore from '../store';
 import { createShortHandProperty } from '../helpers';
+import { TransformPlugin } from '../types';
 
-export const i18nPlugin = (ast: ParseResult<t.File>) => {
+export const i18nPlugin: TransformPlugin = ({ ast, t, traverse, store }) => {
 	const i18nContextKey = new Map([
 		['$t', 't'],
 		['$d', 'd'],
@@ -40,8 +37,8 @@ export const i18nPlugin = (ast: ParseResult<t.File>) => {
 			t.callExpression(t.identifier('useI18n'), [t.identifier('i18n')]),
 		),
 	]);
-	ConversionStore.addBeforeSetupStatement('i18n', i18n);
+	store.addBeforeSetupStatement('i18n', i18n);
 
 	// 3. Add Import { useI18n } from 'vue-i18n';
-	ConversionStore.addImport('common/composables/use-i18n', 'useI18n');
+	store.addImport('common/composables/use-i18n', 'useI18n');
 };

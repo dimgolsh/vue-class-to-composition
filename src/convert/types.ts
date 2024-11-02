@@ -1,13 +1,17 @@
 import * as t from '@babel/types';
+import { ParseResult } from '@babel/parser';
+import traverse from '@babel/traverse';
+import ConversionStore from './store';
 
-export interface ConstVariables {
-	identifier: t.Identifier;
-	objectProperties: Map<string, t.ObjectProperty>;
-	init: t.CallExpression;
+// Тип для параметров плагина
+export interface PluginParams {
+	ast: ParseResult<t.File>;
+	t: typeof t;
+	traverse: typeof traverse;
+	store: typeof ConversionStore;
 }
 
-export interface ConstVariable {
-	identifier: t.Identifier;
-	objectProperty: { key: string; value: t.ObjectProperty };
-	init: t.CallExpression;
-}
+// Тип для плагина
+export type TransformPlugin = (params: PluginParams) => void;
+
+

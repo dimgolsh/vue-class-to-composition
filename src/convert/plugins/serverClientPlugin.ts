@@ -1,9 +1,6 @@
-import traverse from '@babel/traverse';
-import { ParseResult } from '@babel/parser';
-import * as t from '@babel/types';
-import ConversionStore from "../store";
+import { TransformPlugin } from '../types';
 
-export const serverClientPlugin = (ast: ParseResult<t.File>) => {
+export const serverClientPlugin: TransformPlugin = ({ ast, t, store, traverse }) => {
 	traverse(ast, {
 		CallExpression: (path) => {
 			if (!path.node.arguments) {
@@ -25,15 +22,13 @@ export const serverClientPlugin = (ast: ParseResult<t.File>) => {
 				return;
 			}
 
-
-
 			const newExpression = t.callExpression(t.identifier('useServerClient'), [arg]);
-			ConversionStore.addImport('composables/use-server-client', 'useServerClient', true);
+			store.addImport('composables/use-server-client', 'useServerClient', true);
 			path.replaceWith(newExpression);
 			path.skip();
 			if (!Array.isArray(path.container) && t.isClassProperty(path.container)) {
 				if (t.isIdentifier(path.container.key)) {
-					ConversionStore.addExcludeRef(path.container.key.name);
+					store.addExcludeRef(path.container.key.name);
 				}
 			}
 		},
