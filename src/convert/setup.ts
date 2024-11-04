@@ -4,8 +4,8 @@ import ConversionStore from './store';
 import { getParamsSetup } from './setup/params';
 
 export const createSetup = (nodes: t.Statement[] = []) => {
-	const before = ConversionStore.getBeforeSetupStatements().values();
-	const after = ConversionStore.getAfterSetupStatements().values();
+	const before = [...ConversionStore.getBeforeSetupStatements().values()];
+	const after = [...ConversionStore.getAfterSetupStatements().values()];
 
 	const returnPropeties = ConversionStore.getReturnStatement();
 

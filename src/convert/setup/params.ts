@@ -8,7 +8,7 @@ export const getParamsSetup = (): Array<t.Identifier | t.Pattern | t.RestElement
 		return [t.identifier('props')];
 	}
 	if (contextKeys.size) {
-		const keys = t.objectPattern([...contextKeys.values().map((name) => createShortHandProperty(name))]);
+		const keys = t.objectPattern([...contextKeys.values()].map((name) => createShortHandProperty(name)));
 		if (ConversionStore.getFlag('HAS_PROPS')) {
 			return [t.identifier('props'), keys];
 		}

@@ -41,7 +41,7 @@ const getTypeName = (type: t.TSType) => {
 
 const transformProp = (property: t.ClassProperty) => {
 	const propName = (property.key as t.Identifier).name;
-	store.addProp(propName);
+	store.addPropName(propName);
 
 	if (!t.isTSTypeAnnotation(property.typeAnnotation)) {
 		return createProp(propName, [requiredProperty]);
@@ -105,7 +105,7 @@ const transformProp = (property: t.ClassProperty) => {
 export const getProps = (node: NodePath<t.ExportDefaultDeclaration>) => {
 	const classProperties = getClassPropertiesByDecoratorName(node, 'Prop');
 
-	const properties: t.ObjectProperty[] = [];
+	const properties: t.ObjectProperty[] = [...ConversionStore.getProps().values()];
 
 	for (const property of classProperties) {
 		const res = transformProp(property);
@@ -115,7 +115,7 @@ export const getProps = (node: NodePath<t.ExportDefaultDeclaration>) => {
 	}
 
 	if (properties.length === 0) {
-		return null
+		return null;
 	}
 
 	return t.objectProperty(t.identifier('props'), t.objectExpression(properties));

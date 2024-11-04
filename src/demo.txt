@@ -3,17 +3,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'common/vue';
+import { Component, Prop, Popup } from 'common/vue';
 import { inject } from 'common/di';
 import { LanguagesClient } from 'api/admin/languages';
-import { INotificationModel } from 'api/admin/notifications';
+import { INotificationModel, IJobModelForCustomer } from 'api/admin/notifications';
 
 interface IModel {
     value: string;
 }
 
 @Component({ i18n, components: { NotificationTemplate, MdButton } })
-export default class LanguageSelector extends Vue {
+export default class LanguageSelector extends Popup<IJobModelForCustomer> {
 	private readonly languagesApi = inject(LanguagesClient);
 	private readonly languagesStore = inject(LanguagesStore);
 

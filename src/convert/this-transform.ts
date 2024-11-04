@@ -7,7 +7,7 @@ export const thisTransform = (path: NodePath<t.MemberExpression>) => {
 	if (t.isThisExpression(path.node.object) && t.isIdentifier(path.node.property)) {
 		const propertyName = path.node.property.name;
 
-		const isProp = ConversionStore.hasProp(propertyName);
+		const isProp = ConversionStore.hasPropName(propertyName);
 
 		// props
 		if (isProp && propertyName) {

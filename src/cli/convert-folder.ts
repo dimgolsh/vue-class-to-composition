@@ -3,13 +3,14 @@ import chalk from 'chalk';
 import cliProgress from 'cli-progress';
 import { convert } from '../convert';
 import { formatCode } from './format-code';
+import { ConvertOptions } from '../convert/types';
 
-const convertFile = async (filePath: string) => {
+const convertFile = async (filePath: string, convertOptions?: ConvertOptions) => {
 	const fileContent = await readFile(filePath);
-	return convert(fileContent);
+	return convert(fileContent, convertOptions);
 };
 
-export const convertFolder = async (folderPath: string) => {
+export const convertFolder = async (folderPath: string, convertOptions?: ConvertOptions) => {
 	try {
 		const start = performance.now();
 		const files = findInDir(folderPath);
@@ -28,7 +29,7 @@ export const convertFolder = async (folderPath: string) => {
 		for (const filePath of files) {
 			value++;
 			try {
-				const result = await convertFile(filePath);
+				const result = await convertFile(filePath, convertOptions);
 
 				if (result.isOk) {
 					resultAll.success++;

@@ -2,7 +2,7 @@ import * as t from '@babel/types';
 import { createShortHandProperty } from './helpers';
 import { TransformPlugin } from './types';
 
-const props = new Set<string>();
+const propsNames = new Set<string>();
 const flags = new Map<string, boolean>();
 const imports = new Map<string, Map<string, { value: string; isDefault: boolean }>>();
 
@@ -12,6 +12,7 @@ const setupContextKeys = new Set<string>();
 const refsName = new Set<string>();
 const excludeRefsName = new Set<string>();
 const returnStatement = new Map<string, t.ObjectMethod | t.ObjectProperty | t.SpreadElement>(null);
+const props = new Map<string, t.ObjectProperty>(null);
 const plugins = new Map<string, TransformPlugin>();
 
 const ConversionStore = (() => {
@@ -80,14 +81,22 @@ const ConversionStore = (() => {
 		return imports;
 	};
 
+	const addProp = (propName: string, node: t.ObjectProperty) => {
+		props.set(propName, node);
+	};
+
+	const getProps = () => {
+		return props;
+	};
+
 	// Метод для добавления пропса
-	const addProp = (propName: string) => {
-		props.add(propName);
+	const addPropName = (propName: string) => {
+		propsNames.add(propName);
 	};
 
 	// Метод для проверки наличия пропса
-	const hasProp = (propName: string): boolean => {
-		return props.has(propName);
+	const hasPropName = (propName: string): boolean => {
+		return propsNames.has(propName);
 	};
 
 	// Метод для установки флага
@@ -109,10 +118,9 @@ const ConversionStore = (() => {
 		return Array.from(plugins.values());
 	};
 
-
 	const clear = () => {
 		imports.clear();
-		props.clear();
+		propsNames.clear();
 		flags.clear();
 		beforeSetupStatement.clear();
 		afterSetupStatement.clear();
@@ -122,17 +130,16 @@ const ConversionStore = (() => {
 		returnStatement.clear();
 	};
 
-
 	const printStore = () => {
-		console.log('Props:', Array.from(props));
+		console.log('Props:', Array.from(propsNames));
 		console.log('Flags:', Array.from(flags.entries()));
 		console.log('Imports:', Array.from(imports.entries()));
 		console.log('Return:', Array.from(returnStatement.entries()));
 	};
 
 	return {
-		addProp,
-		hasProp,
+		addPropName,
+		hasPropName,
 		setFlag,
 		getFlag,
 		clear,
@@ -153,7 +160,9 @@ const ConversionStore = (() => {
 		addExcludeRef,
 		hasExcludeRefsName,
 		registerPlugin,
-		getPlugins
+		getPlugins,
+		addProp,
+		getProps,
 	};
 })();
 

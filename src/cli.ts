@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { convertSingleFile } from './cli/convert-single';
 import { convertFolder } from './cli/convert-folder';
+import { ConvertSingleFileOptions } from './convert/types';
 
 const program = new Command();
 
@@ -16,7 +17,7 @@ program
 	.command('single <filepath>')
 	.description('Convert a single Vue file to Composition API')
 	.option('-v, --view', 'Preview changes in the editor')
-	.action((filepath: string, options: Record<string, any>) => {
+	.action((filepath: string, options: ConvertSingleFileOptions) => {
 		convertSingleFile(filepath, options);
 	});
 

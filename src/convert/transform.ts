@@ -9,8 +9,6 @@ import { createSetup } from './setup';
 import { getOtherNodes } from './other';
 import { getImportsNodes } from './imports';
 import { wrapNewLineComment } from './utils';
-import { i18nPlugin } from './plugins/i18n';
-import { useRouterPlugin } from './plugins/useRouter';
 import { replaceContext } from './setup/context';
 import { replaceRefsToRef } from './setup/refs';
 import { replaceVueHooks } from './setup/vue';
@@ -18,22 +16,25 @@ import { getRefs } from './setup/ref';
 import { getComputeds } from './setup/computed';
 import { getMethods } from './setup/methods';
 import ConversionStore from './store';
-import { useValidatePlugin } from './plugins/validate';
-import { usePlugins } from './plugins';
-import { serverClientPlugin } from './plugins/serverClientPlugin';
+import { defaultPlugins, usePlugins } from './plugins';
+import { TransformPlugin } from './types';
 
-export const transform = (ast: ParseResult<t.File>) => {
+export interface TransformOptions {
+	plugins: TransformPlugin[];
+}
+
+export const transform = (ast: ParseResult<t.File>, options: TransformOptions) => {
+	const { plugins = [] } = options ?? {};
 	// Before clear store
 	ConversionStore.clear();
 
 	const node: NodePath<t.ExportDefaultDeclaration> = getDefaultNode(ast);
-
 	// Plugins
-	usePlugins(ast, [serverClientPlugin, i18nPlugin, useRouterPlugin, useValidatePlugin]);
+	usePlugins(ast, [...defaultPlugins, ...plugins]);
 
 	const otherNodes = getOtherNodes(ast);
 	const componentName = getComponentName(node);
-	const options = getComponentOptions(node);
+	const componentOptions = getComponentOptions(node);
 	const props = getProps(node);
 
 	const refs = getRefs(node);
@@ -51,7 +52,7 @@ export const transform = (ast: ParseResult<t.File>) => {
 
 	const properties: Array<t.ObjectMethod | t.ObjectProperty | t.SpreadElement> = [
 		componentName,
-		...options,
+		...componentOptions,
 		props,
 		setup,
 	].filter((n) => !!n);

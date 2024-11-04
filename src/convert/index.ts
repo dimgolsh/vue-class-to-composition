@@ -4,6 +4,7 @@ import generate from '@babel/generator';
 import { generateVue } from './generateVue';
 import { formatCode } from './formatCode';
 import { transform } from './transform';
+import { ConvertOptions } from './types';
 
 interface ConvertResult {
 	isOk: boolean;
@@ -11,7 +12,8 @@ interface ConvertResult {
 	errors: string[];
 }
 
-export const convert = async (content: string): Promise<ConvertResult> => {
+export const convert = async (content: string, options?: ConvertOptions): Promise<ConvertResult> => {
+	const { prettierConfig = {}, plugins = [] } = options ?? {};
 	// Parse
 	const desc = parseVueFromContent(content);
 
@@ -24,7 +26,7 @@ export const convert = async (content: string): Promise<ConvertResult> => {
 
 	try {
 		// Transform
-		const newAst = transform(ast);
+		const newAst = transform(ast, { plugins });
 
 		// Generate
 		const code = generate(newAst, { jsescOption: { quotes: 'single' } }).code;
@@ -33,7 +35,7 @@ export const convert = async (content: string): Promise<ConvertResult> => {
 		const rawVue = generateVue(desc, code);
 
 		// Format
-		const format = await formatCode(rawVue);
+		const format = await formatCode(rawVue, prettierConfig);
 
 		return {
 			isOk: true,

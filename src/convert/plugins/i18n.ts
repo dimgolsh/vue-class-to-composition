@@ -30,10 +30,12 @@ export const i18nPlugin: TransformPlugin = ({ ast, t, traverse, store }) => {
 		return;
 	}
 
+	const objectProperties = [...existKeys.values()].map((key) => createShortHandProperty(key));
+
 	// 2. Add const {t, n} = useI18n(i18n);
 	const i18n = t.variableDeclaration('const', [
 		t.variableDeclarator(
-			t.objectPattern([...existKeys.values().map((name) => createShortHandProperty(name))]),
+			t.objectPattern(objectProperties),
 			t.callExpression(t.identifier('useI18n'), [t.identifier('i18n')]),
 		),
 	]);
