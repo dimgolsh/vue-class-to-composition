@@ -4,10 +4,11 @@
   "keywords": [
     "vue class component",
     "vue",
-    "composition api"
+    "composition api",
+    "convert vue"
   ],
   "author": "Dmitriy (https://github.com/dimgolsh)",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -63,6 +64,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dimgolsh/vue-comp-to-setup.git"
+    "url": "git+https://github.com/dimgolsh/vue-class-to-composition.git"
   }
 }
