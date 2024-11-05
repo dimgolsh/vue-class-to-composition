@@ -11,32 +11,17 @@ const createProp = (name: string, properties: t.ObjectProperty[]) => {
 
 const requiredProperty = t.objectProperty(t.identifier('required'), t.booleanLiteral(true));
 
-const createPropType = (typeName: string, isArray: boolean) => {
+const createPropType = (reference: t.TSType, isArray: boolean) => {
 	// type: Object as PropType<INotificationModel>
 	// type: Array as PropType<INotificationModel[]>
-	const reference = t.tSTypeReference(t.identifier(typeName));
 	const identifier = t.identifier(isArray ? 'Array' : 'Object');
 	return t.objectProperty(
 		t.identifier('type'),
 		t.tsAsExpression(
 			identifier,
-			t.tsTypeReference(
-				t.identifier('PropType'),
-				t.tsTypeParameterInstantiation([isArray ? t.tsArrayType(reference) : reference]),
-			),
+			t.tsTypeReference(t.identifier('PropType'), t.tsTypeParameterInstantiation([reference])),
 		),
 	);
-};
-
-const getTypeName = (type: t.TSType) => {
-	if (t.isTSTypeReference(type) && t.isIdentifier(type.typeName)) {
-		return type.typeName.name;
-	}
-	if (t.isTSArrayType(type)) {
-		return getTypeName(type.elementType);
-	}
-
-	return null;
 };
 
 const transformProp = (property: t.ClassProperty) => {
@@ -50,16 +35,14 @@ const transformProp = (property: t.ClassProperty) => {
 
 	const results: Map<string, t.ObjectProperty> = new Map();
 
-	const typeName = getTypeName(type);
-
 	if (t.isTSTypeReference(type)) {
 		// type: Object as PropType<INotificationModel>
-		results.set('type', createPropType(typeName, false));
+		results.set('type', createPropType(type, false));
 	}
 
 	if (t.isTSArrayType(type)) {
 		// type: Array as PropType<INotificationModel[]>
-		results.set('type', createPropType(typeName, true));
+		results.set('type', createPropType(type, true));
 	}
 
 	if (t.isTSStringKeyword(type)) {

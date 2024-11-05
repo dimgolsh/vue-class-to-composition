@@ -29,7 +29,7 @@ const init = async () => {
 			if (val.isOk) {
 				output.setValue(val.content as string);
 			} else {
-				output.setValue(val.errors.join('\n'));
+				output.setValue(val.content as string + val.errors.join('\n'));
 			}
 
 			// eslint-disable-next-line no-empty
@@ -39,8 +39,8 @@ const init = async () => {
 	editor.onDidChangeModelContent(() => {
 		setOutput()
 			.then((res) => res)
-			.catch(() => {
-				console.error('');
+			.catch((e) => {
+				console.error(e);
 			});
 	});
 };
