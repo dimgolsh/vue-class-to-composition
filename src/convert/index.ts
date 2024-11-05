@@ -1,4 +1,4 @@
-import { parseVueFromContent } from './utils';
+import { beforeValidate, checkHasClassComponent, parseVueFromContent } from './utils';
 import { parse } from '@babel/parser';
 import generate from '@babel/generator';
 import { generateVue } from './generateVue';
@@ -17,6 +17,13 @@ export const convert = async (content: string, options?: ConvertOptions): Promis
 	// Parse
 	const desc = parseVueFromContent(content);
 
+	// Validate before convert
+	const validate = beforeValidate(desc);
+
+	if (!validate.isOk) {
+		return validate;
+	}
+
 	// AST
 	const ast = parse(desc.script.content, {
 		sourceType: 'module',
@@ -25,6 +32,12 @@ export const convert = async (content: string, options?: ConvertOptions): Promis
 	});
 
 	try {
+		// Check has class component
+		const hasClassComponent = checkHasClassComponent(ast);
+		if (!hasClassComponent.isOk) {
+			return hasClassComponent;
+		}
+
 		// Transform
 		const newAst = transform(ast, { plugins });
 

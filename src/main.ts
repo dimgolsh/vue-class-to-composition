@@ -26,7 +26,12 @@ const init = async () => {
 	const setOutput = async () => {
 		try {
 			const val = await convert(editor.getValue());
-			output.setValue(val.content as string);
+			if (val.isOk) {
+				output.setValue(val.content as string);
+			} else {
+				output.setValue(val.errors.join('\n'));
+			}
+
 			// eslint-disable-next-line no-empty
 		} catch (error) {}
 	};
