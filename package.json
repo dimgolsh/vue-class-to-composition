@@ -1,8 +1,13 @@
 {
   "name": "vue-class-to-composition",
   "description": "Convert Vue files written using the old syntax Vue Class Components into Vue composition API syntax",
+  "keywords": [
+    "vue class component",
+    "vue",
+    "composition api"
+  ],
   "author": "Dmitriy (https://github.com/dimgolsh)",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -55,5 +60,9 @@
     "typescript": "^5.5.4",
     "vite": "^5.4.8",
     "vite-plugin-node-polyfills": "^0.22.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dimgolsh/vue-comp-to-setup.git"
   }
 }
