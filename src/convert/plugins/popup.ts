@@ -3,7 +3,6 @@ import { TransformPlugin } from '../types';
 export const usePopupPlugin: TransformPlugin = ({ ast, t, traverse, store }) => {
 	traverse(ast, {
 		ExportDefaultDeclaration(path) {
-			console.log(path);
 			const declaration = path.node.declaration;
 
 			if (!t.isClassDeclaration(declaration)) {

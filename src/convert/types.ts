@@ -20,8 +20,8 @@ export interface ConvertOptions {
 	prettierConfig?: Options;
 }
 
-
 export interface ConvertSingleFileOptions {
-	view: boolean
-	convertOptions?: ConvertOptions
+	view: boolean;
+	pluginsDir?: string;
+	convertOptions?: ConvertOptions;
 }

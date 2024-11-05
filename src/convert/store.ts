@@ -121,6 +121,7 @@ const ConversionStore = (() => {
 	const clear = () => {
 		imports.clear();
 		propsNames.clear();
+		props.clear();
 		flags.clear();
 		beforeSetupStatement.clear();
 		afterSetupStatement.clear();

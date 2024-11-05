@@ -3,9 +3,10 @@ import chalk from 'chalk';
 import { convert } from '../convert';
 import { formatCode } from './format-code';
 import { ConvertSingleFileOptions } from '../convert/types';
+import { registerPlugins } from './get-plugins';
 
 export const convertSingleFile = async (filepath: string, options?: ConvertSingleFileOptions) => {
-	const { view = false, convertOptions = {} } = options ?? {};
+	const { view = false, convertOptions = {}, pluginsDir } = options ?? {};
 	try {
 		if (!isVueFile(filepath)) {
 			console.warn(chalk.yellow(`⚠ Not a Vue file: ${filepath}`));
@@ -20,6 +21,11 @@ export const convertSingleFile = async (filepath: string, options?: ConvertSingl
 		}
 
 		const fileContent = await readFile(filepath);
+
+		if (pluginsDir) {
+			await registerPlugins(pluginsDir);
+		}
+
 		const { isOk, content, errors } = await convert(fileContent, convertOptions); // Конвертация
 
 		if (isOk) {

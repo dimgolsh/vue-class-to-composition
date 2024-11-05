@@ -17,6 +17,7 @@ program
 	.command('single <filepath>')
 	.description('Convert a single Vue file to Composition API')
 	.option('-v, --view', 'Preview changes in the editor')
+	.option('-p --pluginsDir <DIR_PATH>', 'Path to directory with plugins')
 	.action((filepath: string, options: ConvertSingleFileOptions) => {
 		convertSingleFile(filepath, options);
 	});
@@ -24,6 +25,7 @@ program
 program
 	.command('folder <filePath>')
 	.description('Convert folder vue files to Composition API')
+	.option('-p --pluginsDir <DIR_PATH>', 'Path to directory with plugins')
 	.action((filepath: string) => {
 		convertFolder(filepath);
 	});
