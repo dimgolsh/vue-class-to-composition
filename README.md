@@ -1,5 +1,5 @@
 # vue-class-to-composition
-![NPM License](https://img.shields.io/npm/l/vue-class-to-composition)
+![GitHub License](https://img.shields.io/github/license/dimgolsh/vue-class-to-composition)
 ![NPM Version](https://img.shields.io/npm/v/vue-class-to-composition)
 
 [Demo](https://dimgolsh.github.io/vue-class-to-composition/)
