@@ -1,0 +1,11 @@
+{
+	"singleQuote": true,
+	"printWidth": 120,
+	"useTabs": true,
+	"endOfLine": "auto",
+	"quoteProps": "consistent",
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"trailingComma": "all",
+	"htmlWhitespaceSensitivity": "strict"
+}
