@@ -1,0 +1,42 @@
+name: Run Vitest and Build CLI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build CLI
+        run: npm run build:cli
+
+        # Делаем файл dist/cli.js исполняемым
+      - name: Make CLI executable
+        run: chmod +x dist/cli.js
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Verify CLI execution
+        run: node dist/cli.js --help

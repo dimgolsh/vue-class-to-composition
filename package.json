@@ -8,14 +8,15 @@
     "convert vue"
   ],
   "author": "Dmitriy (https://github.com/dimgolsh)",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "build:cli": "babel src --out-dir dist --extensions \".ts\" && tsc --emitDeclarationOnly -p tsconfig.compile.json",
     "preview": "vite preview",
     "deploy": "gh-pages -d demo-dist",
-    "publish": "npm run build:cli && npm publish"
+    "publish": "npm run build:cli && npm publish",
+    "test": "chmod +x dist/cli.js && vitest"
   },
   "bin": {
     "vue-class-to-composition": "bin/cli"
@@ -37,10 +38,10 @@
     "@babel/traverse": "^7.25.6",
     "@babel/types": "^7.25.6",
     "@vue/compiler-sfc": "^3.2.45",
-    "monaco-editor": "^0.51.0",
     "chalk": "^4.1.2",
     "cli-progress": "^3.12.0",
     "commander": "^12.1.0",
+    "monaco-editor": "^0.51.0",
     "prettier": "^3.3.3"
   },
   "devDependencies": {
@@ -60,7 +61,8 @@
     "gh-pages": "^6.1.1",
     "typescript": "^5.5.4",
     "vite": "^5.4.8",
-    "vite-plugin-node-polyfills": "^0.22.0"
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "vitest": "^2.1.4"
   },
   "repository": {
     "type": "git",
