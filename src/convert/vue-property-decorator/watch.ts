@@ -40,6 +40,7 @@ export const replaceWatchDecorator = (ast: ParseResult<t.File>) => {
 			const watch = t.expressionStatement(t.callExpression(t.identifier('watch'), callArguments));
 
 			ConversionStore.addAfterSetupStatement(watch);
+			ConversionStore.addImport('vue', 'watch');
 		},
 	});
 };

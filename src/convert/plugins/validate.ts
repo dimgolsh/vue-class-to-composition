@@ -41,5 +41,6 @@ export const useValidatePlugin: TransformPlugin = ({ ast, t, traverse, store }) 
 
 	store.addAfterSetupStatement($v);
 	store.addAfterSetupStatement(statement);
+	store.addImport('vue', 'provide');
 	store.addRef('$v');
 };
