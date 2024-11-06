@@ -39,7 +39,7 @@ export const i18nPlugin: TransformPlugin = ({ ast, t, traverse, store }) => {
 			t.callExpression(t.identifier('useI18n'), [t.identifier('i18n')]),
 		),
 	]);
-	store.addBeforeSetupStatement('i18n', i18n);
+	store.addBeforeSetupStatement(i18n);
 
 	// 3. Add Import { useI18n } from 'vue-i18n';
 	store.addImport('common/composables/use-i18n', 'useI18n');

@@ -15,20 +15,38 @@ vue-class-to-composition can convert Vue Class components to Composition API syn
 
 
 ### Supported features
-- [x] `@Component`
-    - [x] Extract component name
-    - [x] Extract custom attributes (`...i18n,  inheritAttrs, ...customOptions`)
-- [x] `@Props`
-    - [x] Extract types and add PropType
-- [x] `this`
-    - [x] Parse `$refs` and create refs
-    - [x] Replace `this` to props, emits and refs
-  
-- [x] `computed`
-- [x] `methods`
-- [x] `hooks`
+
+#### vue-property-decorator
+| name               | Support |
+|--------------------|---------|
+| `@Component`       | ✅       |
+| `@Props`           | ✅       |
+| `@PropSync`        | ❌️      |
+| `@Emit`            | ❌️      |
+| `@Provice`         | ❌️      |
+| `@Inject`          | ❌️      |
+| `@Ref`             | ❌️      |
+| `@VModel`          | ❌️      |
+| `@Model`           | ❌️      |
+| `@ModelSynch`      | ❌️      |
+| `@ProvideReactive` | ❌️      |
+| `@InjectReactive`  | ❌️      |
+| `@Watch`           | ✅       |
 
 
+#### vue-class-component
+| name                | Support | Description             |
+|---------------------|---------|-------------------------|
+| Data                | ✅       |
+| Methods             | ✅       |
+| Computed Properties | ✅       |
+| Hooks               | ✅       |
+| Hooks               | ✅       |
+| Other Options       | ✅       |
+| Custom Decorators   | ⚠️      | `@Validate`             |
+| Extends             | ⚠️      | `extends Popup<Type>`   |
+| Mixins              | ❌️      | Future                  |
+| `$refs `            | ⚠️️     | Parse from `this.$refs` |
 
 
 ## Requirements
@@ -142,6 +160,18 @@ convertAll();
 
 ## Plugins
 
+
+### Default plugins for (SC company)
+| name         | Description                                                   |
+|--------------|---------------------------------------------------------------|
+| i18n         | Add `const {t} = useI18n(i18n)`                               |
+| popup        | Add props from `extends Popup<boolean>`                       |
+| serverClient | Replace `inject(SomeClient)` to `useServerClient(SomeClient)` |
+| useRouter    | Add composables `useRoute, useRouter`                         |
+| validate     | Parse custom validator `@Validate`                            |
+
+
+### Example plugin
 You can create custom plugin
 ```ts
 export interface PluginParams {
@@ -167,12 +197,12 @@ declare const ConversionStore: {
     value: string;
     isDefault: boolean;
   }>>;
-  addBeforeSetupStatement: (name: string, node: t.Statement) => void;
-  getBeforeSetupStatements: () => Map<string, t.Statement>;
+  addBeforeSetupStatement: (node: t.Statement) => void;
+  getBeforeSetupStatements: () => Set<t.Statement>;
   addSetupContextKey: (name: string) => void;
   getSetupContextKeys: () => Set<string>;
-  addAfterSetupStatement: (name: string, node: t.Statement) => void;
-  getAfterSetupStatements: () => Map<string, t.Statement>;
+  addAfterSetupStatement: (node: t.Statement) => void;
+  getAfterSetupStatements: () => Set<t.Statement>;
   addReturnStatement: (name: string, node: t.ObjectMethod | t.ObjectProperty | t.SpreadElement) => void;
   getReturnStatement: () => Map<string, t.ObjectMethod | t.ObjectProperty | t.SpreadElement>;
   addRef: (name: string) => void;

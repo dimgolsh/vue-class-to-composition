@@ -18,7 +18,7 @@ export const replaceRefsToRef = (ast: ParseResult<t.File>) => {
 					t.variableDeclarator(t.identifier(name), t.callExpression(t.identifier('ref'), [t.nullLiteral()])),
 				]);
 
-				ConversionStore.addBeforeSetupStatement(name, ref);
+				ConversionStore.addBeforeSetupStatement(ref);
 				ConversionStore.addShortReturnStatementByName(name);
 				ConversionStore.addRef(name);
 				const newExpression = t.memberExpression(t.identifier(name), t.identifier('value'));

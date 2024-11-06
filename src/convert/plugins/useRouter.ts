@@ -24,7 +24,7 @@ export const useRouterPlugin: TransformPlugin = ({ ast, t, traverse, store }) =>
 					const declaration = t.variableDeclaration('const', [
 						t.variableDeclarator(t.identifier(result.key), t.callExpression(t.identifier(result.import.path), [])),
 					]);
-					store.addBeforeSetupStatement(result.import.path, declaration);
+					store.addBeforeSetupStatement(declaration);
 				}
 			}
 		},

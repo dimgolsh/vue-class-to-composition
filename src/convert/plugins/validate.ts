@@ -39,7 +39,7 @@ export const useValidatePlugin: TransformPlugin = ({ ast, t, traverse, store }) 
 		t.callExpression(t.identifier('provide'), [t.stringLiteral('$v'), t.identifier('$v')]),
 	);
 
-	store.addAfterSetupStatement('useVuelidate', $v);
-	store.addAfterSetupStatement('provide$v', statement);
+	store.addAfterSetupStatement($v);
+	store.addAfterSetupStatement(statement);
 	store.addRef('$v');
 };

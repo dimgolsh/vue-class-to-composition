@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Popup } from 'common/vue';
+import { Component, Prop, Popup, Watch } from 'common/vue';
 import { inject } from 'common/di';
 import { LanguagesClient } from 'api/admin/languages';
 import { INotificationModel, IJobModelForCustomer } from 'api/admin/notifications';
@@ -97,6 +97,16 @@ export default class LanguageSelector extends Popup<IJobModelForCustomer> {
 	public async calc(a: number, b: number) {
     	return a + b;
 	}
+
+	@Watch('languages', { immediate: true, deep: true })
+    onPersonChanged1(val: any, oldVal: any) {}
+
+    @Watch('value')
+    onPersonChanged2(val: INotificationModel, oldVal: INotificationModel) {}
+
+    @Watch('languages')
+    @Watch('value')
+    onPersonAndChildChanged() {}
 
 	mounted() {
     		this.$nextTick();

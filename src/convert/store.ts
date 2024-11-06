@@ -2,15 +2,15 @@ import * as t from '@babel/types';
 import { createShortHandProperty } from './helpers';
 import { TransformPlugin } from './types';
 
-const defaultExcludeImports = ['Component', 'Prop', 'Vue'];
+const defaultExcludeImports = ['Component', 'Prop', 'Vue', 'Watch'];
 
 const propsNames = new Set<string>();
 const flags = new Map<string, boolean>();
 const imports = new Map<string, Map<string, { value: string; isDefault: boolean }>>();
 const excludesNamesImportSpecifier = new Set(defaultExcludeImports);
 
-const beforeSetupStatement = new Map<string, t.Statement>(null);
-const afterSetupStatement = new Map<string, t.Statement>(null);
+const beforeSetupStatement = new Set<t.Statement>(null);
+const afterSetupStatement = new Set<t.Statement>(null);
 const setupContextKeys = new Set<string>();
 const refsName = new Set<string>();
 const excludeRefsName = new Set<string>();
@@ -63,16 +63,16 @@ const ConversionStore = (() => {
 		return setupContextKeys;
 	};
 
-	const addBeforeSetupStatement = (name: string, node: t.Statement) => {
-		beforeSetupStatement.set(name, node);
+	const addBeforeSetupStatement = (node: t.Statement) => {
+		beforeSetupStatement.add(node);
 	};
 
 	const getBeforeSetupStatements = () => {
 		return beforeSetupStatement;
 	};
 
-	const addAfterSetupStatement = (name: string, node: t.Statement) => {
-		afterSetupStatement.set(name, node);
+	const addAfterSetupStatement = (node: t.Statement) => {
+		afterSetupStatement.add(node);
 	};
 
 	const getAfterSetupStatements = () => {

@@ -18,6 +18,7 @@ import { getMethods } from './setup/methods';
 import ConversionStore from './store';
 import { defaultPlugins, usePlugins } from './plugins';
 import { TransformPlugin } from './types';
+import { replaceWatchDecorator } from './vue-property-decorator/watch';
 
 export interface TransformOptions {
 	plugins: TransformPlugin[];
@@ -44,6 +45,7 @@ export const transform = (ast: ParseResult<t.File>, options: TransformOptions) =
 	replaceContext(ast);
 	replaceRefsToRef(ast);
 	replaceVueHooks(ast);
+	replaceWatchDecorator(ast);
 
 	// Replace this.
 	replaceThis(ast);

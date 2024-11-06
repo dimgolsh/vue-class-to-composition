@@ -29,7 +29,7 @@ export const replaceVueHooks = (ast: ParseResult<t.File>) => {
 					const newExpression = t.identifier(options.key);
 					ConversionStore.addImport(options.import.source, options.import.path);
 					if (options.beforeStatement) {
-						ConversionStore.addBeforeSetupStatement(options.import.path, options.beforeStatement);
+						ConversionStore.addBeforeSetupStatement(options.beforeStatement);
 					}
 					path.replaceWith(newExpression);
 					return;

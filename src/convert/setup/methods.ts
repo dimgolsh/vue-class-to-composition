@@ -35,10 +35,7 @@ const transformMethod = (node: t.ClassMethod) => {
 			const result = t.variableDeclaration('const', [
 				t.variableDeclarator(t.identifier(legacyHooks.get(name)), expression),
 			]);
-			ConversionStore.addAfterSetupStatement(
-				legacyName,
-				t.expressionStatement(t.callExpression(t.identifier(legacyName), [])),
-			);
+			ConversionStore.addAfterSetupStatement(t.expressionStatement(t.callExpression(t.identifier(legacyName), [])));
 			return result;
 		}
 		// mounted -> onMounted
