@@ -2,9 +2,12 @@ import * as t from '@babel/types';
 import { createShortHandProperty } from './helpers';
 import { TransformPlugin } from './types';
 
+const defaultExcludeImports = ['Component', 'Prop', 'Vue'];
+
 const propsNames = new Set<string>();
 const flags = new Map<string, boolean>();
 const imports = new Map<string, Map<string, { value: string; isDefault: boolean }>>();
+const excludesNamesImportSpecifier = new Set(defaultExcludeImports);
 
 const beforeSetupStatement = new Map<string, t.Statement>(null);
 const afterSetupStatement = new Map<string, t.Statement>(null);
@@ -16,6 +19,14 @@ const props = new Map<string, t.ObjectProperty>(null);
 const plugins = new Map<string, TransformPlugin>();
 
 const ConversionStore = (() => {
+	const getExcludesNamesImportSpecifier = () => {
+		return excludesNamesImportSpecifier;
+	};
+
+	const addExcludesNamesImportSpecifier = (name: string) => {
+		excludesNamesImportSpecifier.add(name);
+	};
+
 	const addRef = (name: string) => {
 		refsName.add(name);
 	};
@@ -120,6 +131,7 @@ const ConversionStore = (() => {
 
 	const clear = () => {
 		imports.clear();
+		excludesNamesImportSpecifier.clear();
 		propsNames.clear();
 		props.clear();
 		flags.clear();
@@ -129,6 +141,11 @@ const ConversionStore = (() => {
 		refsName.clear();
 		excludeRefsName.clear();
 		returnStatement.clear();
+
+		// Default values
+		defaultExcludeImports.forEach((value) => {
+			excludesNamesImportSpecifier.add(value);
+		});
 	};
 
 	const printStore = () => {
@@ -164,6 +181,8 @@ const ConversionStore = (() => {
 		getPlugins,
 		addProp,
 		getProps,
+		addExcludesNamesImportSpecifier,
+		getExcludesNamesImportSpecifier,
 	};
 })();
 

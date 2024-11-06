@@ -3,8 +3,6 @@ import * as t from '@babel/types';
 import ConversionStore from './store';
 import traverse from '@babel/traverse';
 
-const excludesNamesImportSpecifier = ['Component', 'Prop', 'Vue'];
-
 export const addImport = (
 	imports: t.ImportDeclaration[],
 	value: {
@@ -32,6 +30,8 @@ export const addImport = (
 };
 
 export const getImportsNodes = (ast: ParseResult<t.File>) => {
+	const excludesNamesImportSpecifier = [...ConversionStore.getExcludesNamesImportSpecifier().values()];
+
 	// Remove excluded imports
 	traverse(ast, {
 		ImportSpecifier(node) {

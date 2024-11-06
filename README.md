@@ -184,6 +184,8 @@ declare const ConversionStore: {
   getPlugins: () => TransformPlugin[];
   addProp: (propName: string, node: t.ObjectProperty) => void;
   getProps: () => Map<string, t.ObjectProperty>;
+  addExcludesNamesImportSpecifier: (name: string) => void;
+  getExcludesNamesImportSpecifier: () => Set<string>;
 };
 export default ConversionStore;
 ```

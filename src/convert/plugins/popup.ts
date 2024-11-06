@@ -23,18 +23,14 @@ export const usePopupPlugin: TransformPlugin = ({ ast, t, traverse, store }) => 
 			const getParams = () => {
 				if (t.isTSTypeParameterInstantiation(declaration.superTypeParameters)) {
 					const param = declaration.superTypeParameters.params[0];
-					if (t.isTSTypeReference(param) && t.isIdentifier(param.typeName)) {
-						const typeName = param.typeName;
-						const identifier = t.identifier('close');
-						const annotation = t.tsTypeAnnotation(t.tsTypeReference(t.identifier(typeName.name)));
-						identifier.typeAnnotation = annotation
-
-						return [identifier];
-					}
-
 					if (t.isTSVoidKeyword(param)) {
 						return [];
 					}
+
+					const identifier = t.identifier('close');
+					identifier.typeAnnotation = t.tsTypeAnnotation(param);
+
+					return [identifier];
 				}
 
 				return [];
@@ -53,12 +49,16 @@ export const usePopupPlugin: TransformPlugin = ({ ast, t, traverse, store }) => 
 				),
 			);
 
-			const defaultProperty = t.objectProperty(t.identifier('default'), t.arrowFunctionExpression(getParams(), t.blockStatement([])))
+			const defaultProperty = t.objectProperty(
+				t.identifier('default'),
+				t.arrowFunctionExpression(getParams(), t.blockStatement([])),
+			);
 
 			const res = t.objectProperty(t.identifier('close'), t.objectExpression([close, defaultProperty]));
 
 			store.addProp('close', res);
 			store.addPropName('close');
+			store.addExcludesNamesImportSpecifier('Popup');
 		},
 	});
 };
