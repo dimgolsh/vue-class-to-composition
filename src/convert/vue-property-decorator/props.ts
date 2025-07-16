@@ -14,6 +14,7 @@ const createPropType = (reference: t.TSType, isArray: boolean) => {
 	// type: Object as PropType<INotificationModel>
 	// type: Array as PropType<INotificationModel[]>
 	const identifier = t.identifier(isArray ? 'Array' : 'Object');
+	store.addImport('vue', 'PropType');
 	return t.objectProperty(
 		t.identifier('type'),
 		t.tsAsExpression(

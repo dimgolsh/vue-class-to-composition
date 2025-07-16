@@ -44,6 +44,7 @@ export const getComputeds = (node: NodePath<t.ExportDefaultDeclaration>) => {
 		}
 
 		ConversionStore.addShortReturnStatementByName(key);
+		ConversionStore.addImport('vue', 'computed');
 		ConversionStore.addRef(key);
 	}
 

@@ -1,71 +1,71 @@
 {
-  "name": "vue-class-to-composition",
-  "description": "Convert Vue files written using the old syntax Vue Class Components into Vue composition API syntax",
-  "keywords": [
-    "vue class component",
-    "vue",
-    "composition api",
-    "convert vue"
-  ],
-  "author": "Dmitriy (https://github.com/dimgolsh)",
-  "version": "1.1.10",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:cli": "babel src --out-dir dist --extensions \".ts\" && tsc --emitDeclarationOnly -p tsconfig.compile.json",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d demo-dist",
-    "publish": "npm run build:cli && npm publish",
-    "test": "chmod +x dist/cli.js && vitest"
-  },
-  "bin": {
-    "vue-class-to-composition": "bin/cli"
-  },
-  "main": "dist/index.js",
-  "types": "dist/types/index.d.ts",
-  "license": "MIT",
-  "files": [
-    "bin",
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "dependencies": {
-    "@babel/generator": "^7.25.6",
-    "@babel/parser": "^7.25.6",
-    "@babel/plugin-proposal-decorators": "^7.25.7",
-    "@babel/plugin-syntax-class-properties": "^7.12.13",
-    "@babel/traverse": "^7.25.6",
-    "@babel/types": "^7.25.6",
-    "@vue/compiler-sfc": "^3.2.45",
-    "chalk": "^4.1.2",
-    "cli-progress": "^3.12.0",
-    "commander": "^12.1.0",
-    "monaco-editor": "^0.51.0",
-    "prettier": "^3.3.3"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.25.6",
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-typescript": "^7.24.7",
-    "@types/babel__generator": "^7.6.8",
-    "@types/babel__traverse": "^7.20.6",
-    "@types/chalk": "^2.2.0",
-    "@types/cli-progress": "^3.11.6",
-    "@types/commander": "^2.12.2",
-    "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.5.5",
-    "execa": "^9.4.0",
-    "fs-extra": "^11.2.0",
-    "gh-pages": "^6.1.1",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.8",
-    "vite-plugin-node-polyfills": "^0.22.0",
-    "vitest": "^2.1.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dimgolsh/vue-class-to-composition.git"
-  }
+	"name": "vue-class-to-composition",
+	"description": "Convert Vue files written using the old syntax Vue Class Components into Vue composition API syntax",
+	"keywords": [
+		"vue class component",
+		"vue",
+		"composition api",
+		"convert vue"
+	],
+	"author": "Dmitriy (https://github.com/dimgolsh)",
+	"version": "1.1.11",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"build:cli": "babel src --out-dir dist --extensions \".ts\" && tsc --emitDeclarationOnly -p tsconfig.compile.json",
+		"preview": "vite preview",
+		"deploy": "npm run build && gh-pages -d demo-dist",
+		"publish:package": "npm run build:cli && npm publish",
+		"test": "npm run build:cli && chmod +x dist/cli.js && vitest"
+	},
+	"bin": {
+		"vue-class-to-composition": "bin/cli"
+	},
+	"main": "dist/index.js",
+	"types": "dist/types/index.d.ts",
+	"license": "MIT",
+	"files": [
+		"bin",
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"dependencies": {
+		"@babel/generator": "^7.25.6",
+		"@babel/parser": "^7.25.6",
+		"@babel/plugin-proposal-decorators": "^7.25.7",
+		"@babel/plugin-syntax-class-properties": "^7.12.13",
+		"@babel/traverse": "^7.25.6",
+		"@babel/types": "^7.25.6",
+		"@vue/compiler-sfc": "^3.2.45",
+		"chalk": "^4.1.2",
+		"cli-progress": "^3.12.0",
+		"commander": "^12.1.0",
+		"monaco-editor": "^0.51.0",
+		"prettier": "^3.3.3"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.25.6",
+		"@babel/core": "^7.25.2",
+		"@babel/preset-env": "^7.25.4",
+		"@babel/preset-typescript": "^7.24.7",
+		"@types/babel__generator": "^7.6.8",
+		"@types/babel__traverse": "^7.20.6",
+		"@types/chalk": "^2.2.0",
+		"@types/cli-progress": "^3.11.6",
+		"@types/commander": "^2.12.2",
+		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^22.5.5",
+		"execa": "^9.4.0",
+		"fs-extra": "^11.2.0",
+		"gh-pages": "^6.1.1",
+		"typescript": "^5.5.4",
+		"vite": "^5.4.8",
+		"vite-plugin-node-polyfills": "^0.22.0",
+		"vitest": "^2.1.4"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/dimgolsh/vue-class-to-composition.git"
+	}
 }

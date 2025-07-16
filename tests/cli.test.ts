@@ -25,7 +25,7 @@ export default class LanguageSelector extends Vue {}
 
 	const result = fs.readFileSync(filePath, 'utf-8');
 
-	const expectedCode = `<script lang="ts"> export default defineComponent({ name: 'LanguageSelector', }); </script> `;
+	const expectedCode = `<script lang="ts">import{defineComponent}from'vue'; export default defineComponent({ name: 'LanguageSelector', }); </script> `;
 
 	expect(clean(result)).toEqual(clean(expectedCode));
 
@@ -54,9 +54,9 @@ test('CLI convert all files in folder', async () => {
 	const result1 = await fs.readFile(path.join(folderPath, 'file1.vue'), 'utf-8');
 	const result2 = await fs.readFile(path.join(folderPath, 'file2.vue'), 'utf-8');
 
-	const expectedCode1 = `<script lang="ts"> export default defineComponent({ name: 'LanguageSelector', }); </script> `;
+	const expectedCode1 = `<script lang="ts">import{defineComponent}from'vue'; export default defineComponent({ name: 'LanguageSelector', }); </script> `;
 
-	const expectedCode2 = `<script lang="ts"> export default defineComponent({ name: 'LanguageSelector', }); </script>`;
+	const expectedCode2 = `<script lang="ts">import{defineComponent}from'vue'; export default defineComponent({ name: 'LanguageSelector', }); </script>`;
 
 	expect(clean(result1)).toEqual(clean(expectedCode1));
 	expect(clean(result2)).toEqual(clean(expectedCode2));

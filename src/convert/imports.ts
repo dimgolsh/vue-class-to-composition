@@ -33,12 +33,18 @@ export const getImportsNodes = (ast: ParseResult<t.File>) => {
 	const excludesNamesImportSpecifier = [...ConversionStore.getExcludesNamesImportSpecifier().values()];
 
 	// Remove excluded imports
+
 	traverse(ast, {
 		ImportSpecifier(node) {
 			if (t.isIdentifier(node.node.imported)) {
 				if (excludesNamesImportSpecifier.includes(node.node.imported.name)) {
 					node.remove();
 				}
+			}
+		},
+		ImportDefaultSpecifier(node) {
+			if (excludesNamesImportSpecifier.includes(node.node.local.name)) {
+				node.remove();
 			}
 		},
 	});

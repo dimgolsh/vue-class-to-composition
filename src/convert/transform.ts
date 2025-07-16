@@ -19,6 +19,7 @@ import ConversionStore from './store';
 import { defaultPlugins, usePlugins } from './plugins';
 import { TransformPlugin } from './types';
 import { replaceWatchDecorator } from './vue-property-decorator/watch';
+import { createDefineComponent } from './defineComponent';
 
 export interface TransformOptions {
 	plugins: TransformPlugin[];
@@ -59,9 +60,7 @@ export const transform = (ast: ParseResult<t.File>, options: TransformOptions) =
 		setup,
 	].filter((n) => !!n);
 
-	const defineComponent = t.exportDefaultDeclaration(
-		t.callExpression(t.identifier('defineComponent'), [t.objectExpression([...properties])]),
-	);
+	const defineComponent = createDefineComponent(properties);
 
 	const imports = getImportsNodes(ast);
 
