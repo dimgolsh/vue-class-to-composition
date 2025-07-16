@@ -64,3 +64,48 @@ test('CLI convert all files in folder', async () => {
 	// Удаляем директорию после теста
 	await fs.remove(folderPath);
 });
+
+test('CLI check vue class has class component', async () => {
+	const filePath = path.resolve(__dirname, 'test.vue');
+
+	await fs.writeFile(
+		filePath,
+		`
+ <script lang="ts">
+import { Component } from 'common/vue';
+
+@Component
+export default class LanguageSelector extends Vue {}
+</script>
+  `,
+		'utf-8',
+	);
+
+	await execa('./dist/cli.js', ['check-vue-class', filePath]);
+
+	const result = await execa('./dist/cli.js', ['check-vue-class', filePath]);
+
+	expect(result.stdout).toContain('⚠ File is contain class component');
+
+	// Чистим файлы после теста
+	await fs.remove(filePath);
+});
+
+test('CLI check vue class has not class component', async () => {
+	const filePath = path.resolve(__dirname, 'test.vue');
+
+	await fs.writeFile(
+		filePath,
+		`<script lang="ts"> export default defineComponent({ name: 'LanguageSelector', }); </script> `,
+		'utf-8',
+	);
+
+	await execa('./dist/cli.js', ['check-vue-class', filePath]);
+
+	const result = await execa('./dist/cli.js', ['check-vue-class', filePath]);
+
+	expect(result.stdout).toEqual('');
+
+	// Чистим файлы после теста
+	await fs.remove(filePath);
+});

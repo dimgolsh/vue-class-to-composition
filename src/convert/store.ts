@@ -43,6 +43,10 @@ const ConversionStore = (() => {
 		return refsName.has(name);
 	};
 
+	const hasRefsSize = () => {
+		return refsName.size > 0;
+	};
+
 	const addReturnStatement = (name: string, node: t.ObjectMethod | t.ObjectProperty | t.SpreadElement) => {
 		returnStatement.set(name, node);
 	};
@@ -174,6 +178,7 @@ const ConversionStore = (() => {
 		getReturnStatement,
 		addRef,
 		hasRefName,
+		hasRefsSize,
 		addShortReturnStatementByName,
 		addExcludeRef,
 		hasExcludeRefsName,

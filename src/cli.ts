@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { convertSingleFile } from './cli/convert-single';
 import { convertFolder } from './cli/convert-folder';
 import { ConvertSingleFileOptions } from './convert/types';
+import { checkVueClassFile } from './cli/check-vue-class';
 
 const program = new Command();
 
@@ -28,6 +29,13 @@ program
 	.option('-p --pluginsDir <DIR_PATH>', 'Path to directory with plugins')
 	.action((filepath: string) => {
 		convertFolder(filepath);
+	});
+
+program
+	.command('check-vue-class <filepath>')
+	.description('Check if the file is using the Vue Class Component')
+	.action((filepath: string) => {
+		checkVueClassFile(filepath);
 	});
 
 program.parse(process.argv);

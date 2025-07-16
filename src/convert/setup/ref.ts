@@ -71,5 +71,9 @@ export const getRefs = (node: NodePath<t.ExportDefaultDeclaration>) => {
 		}
 	}
 
+	if (ConversionStore.hasRefsSize()) {
+		ConversionStore.addImport('vue', 'ref');
+	}
+
 	return declarations;
 };
