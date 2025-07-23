@@ -20,6 +20,7 @@ import { defaultPlugins, usePlugins } from './plugins';
 import { TransformPlugin } from './types';
 import { replaceWatchDecorator } from './vue-property-decorator/watch';
 import { createDefineComponent } from './defineComponent';
+import { getEmits } from './emits';
 
 export interface TransformOptions {
 	plugins: TransformPlugin[];
@@ -38,6 +39,7 @@ export const transform = (ast: ParseResult<t.File>, options: TransformOptions) =
 	const componentName = getComponentName(node);
 	const componentOptions = getComponentOptions(node);
 	const props = getProps(node);
+	const emits = getEmits(ast);
 
 	const refs = getRefs(node);
 	const computeds = getComputeds(node);
@@ -57,6 +59,7 @@ export const transform = (ast: ParseResult<t.File>, options: TransformOptions) =
 		componentName,
 		...componentOptions,
 		props,
+		emits,
 		setup,
 	].filter((n) => !!n);
 

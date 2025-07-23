@@ -6,6 +6,8 @@ export const useRouterPlugin: TransformPlugin = ({ ast, t, traverse, store }) =>
 		['$router', { key: 'router', import: { source: 'vue-router/composables', path: 'useRouter' } }],
 	]);
 
+	const addedKeys = new Set<string>();
+
 	traverse(ast, {
 		MemberExpression: (path) => {
 			if (t.isThisExpression(path.node.object) && t.isIdentifier(path.node.property)) {
@@ -24,7 +26,10 @@ export const useRouterPlugin: TransformPlugin = ({ ast, t, traverse, store }) =>
 					const declaration = t.variableDeclaration('const', [
 						t.variableDeclarator(t.identifier(result.key), t.callExpression(t.identifier(result.import.path), [])),
 					]);
-					store.addBeforeSetupStatement(declaration);
+					if (!addedKeys.has(result.key)) {
+						store.addBeforeSetupStatement(declaration);
+						addedKeys.add(result.key);
+					}
 				}
 			}
 		},
